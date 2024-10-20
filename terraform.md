@@ -1,5 +1,6 @@
 # Terraform
 
+```terraform
 terraform init
 terraform plan
 
@@ -8,3 +9,4 @@ terraform apply -var="create_vm=false" -auto-approve
 
 Create:
 terraform apply -var="create_vm=true" -auto-approve
+```
