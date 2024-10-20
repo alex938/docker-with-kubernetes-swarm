@@ -1,4 +1,4 @@
-#Docker
+# Docker
 
 docker container run -p 80:80 --name web -d nginx
 docker container inspect --format '{{ .NetworkSettings.IPAddress }}' web
