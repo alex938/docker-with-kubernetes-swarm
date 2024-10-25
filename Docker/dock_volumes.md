@@ -7,5 +7,9 @@ docker container run -d --name mysql -e MYSQL_ALL_EMPTY_PASSWORD:True -v mysql-d
 ```
 
 ```
+docker container run -d --name nginx2 -p 80:80 -v $(pwd):/usr/share/nginx/html nginx
+```
+
+```
 docker volume create 
 ```
