@@ -5,7 +5,7 @@ docker login -u <username>
 ```
 
 ```
-docker tag nginx alex938/nginx
+docker tag nginx <username>/nginx:<tag>
 docker images
-docker push alex938/nginx:latest
+docker push <username>/nginx:<tag>
 ```
