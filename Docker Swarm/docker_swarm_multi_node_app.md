@@ -11,6 +11,14 @@ sudo docker service create --name redis --network frontend --replicas 2 redis:3.
 sudo docker service create --name worker --network frontend --network backend dockersamples/examplevotingapp_worker
 sudo docker service create --name db --mount type=volume,source=db-data,target=/var/lib/postgresql/data --network backend postgres:9.4
 #creates volume db-data in /var/lib/docker/volumes/db-data/_data
+
+#dind mount:
+sudo docker service create \
+  --name db \
+  --mount type=bind,source=/home/user/data,target=/var/lib/postgresql/data \
+  --network backend \
+  postgres:9.4
+
 sudo docker service create --name result --network frontend -p 50001:80 dockersamples/examplevotingapp_result:before
 ```
 
