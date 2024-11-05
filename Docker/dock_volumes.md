@@ -11,5 +11,5 @@ docker container run -d --name nginx2 -p 80:80 -v $(pwd):/usr/share/nginx/html n
 ```
 
 ```
-docker volume create 
+docker volume create volume_name
 ```
