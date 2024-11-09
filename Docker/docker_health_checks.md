@@ -1,6 +1,8 @@
 # Docker Health Checks
 
-```
+## Dockerfile Example
+
+```Dockerfile
 FROM nginx:latest
 
 COPY health.html /usr/share/nginx/html/health.html
@@ -11,10 +13,11 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl -f http://localhost/health.html || exit 1
 
 CMD ["nginx", "-g", "daemon off;"]
-
 ```
 
-```
+## Docker Compose Example
+
+```yaml
 services:
   nginx:
     image: nginx:latest
@@ -29,5 +32,4 @@ services:
       timeout: 5s
       retries: 3
       start_period: 10s
-
 ```
