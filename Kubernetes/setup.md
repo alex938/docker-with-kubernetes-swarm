@@ -44,7 +44,7 @@ sudo docker run hello-world
 ```bash
 sudo systemctl status containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
-sudo nano /etc/containerd/config.toml #edit 'SystemdCgroup = true' in [..io.containerd...runc.options]
+sudo nano /etc/containerd/config.toml #cahnge 'SystemdCgroup = true' in [..io.containerd...runc.options]
 sudo systemctl restart containerd
 sudo systemctl status containerd
 ```
@@ -57,6 +57,13 @@ sudo apt-get update
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 sudo systemctl enable --now kubelet
+```
+
+### Install network plugin (flannel in this case)
+```bash
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+sudo systemctl restart kubelet
+kubectl get pods -n kube-system
 ```
 
 ### Initialise Kubernetes Cluster
