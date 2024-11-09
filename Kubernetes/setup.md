@@ -85,6 +85,7 @@ openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outfor
 ```bash
 kubectl run my-nginx --image nginx
 kubectl describe pod my-nginx
+kubectl delete pod my-nginx
 ```
 
 ### Check cluster
