@@ -44,7 +44,7 @@ sudo docker run hello-world
 ```bash
 sudo systemctl status containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml
-sudo nano /etc/containerd/config.toml
+sudo nano /etc/containerd/config.toml #edit 'SystemdCgroup = true' in [..io.containerd...runc.options]
 sudo systemctl restart containerd
 sudo systemctl status containerd
 ```
