@@ -88,6 +88,13 @@ kubectl describe pod my-nginx
 kubectl delete pod my-nginx
 ```
 
+### Create pod
+```bash
+kubectl create deployment my-nginx --image nginx
+kubectl get all
+kubectl delete deployment my-nginx
+```
+
 ### Check cluster
 ```bash
 kubectl get pods -n kube-system
