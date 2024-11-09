@@ -1,2 +1,2 @@
-# DevOps - Docker, Compose, Swarm, Kubernetes
+# DevOps - Docker, Compose, Swarm, Kubernetes, Actions, CICD
 
