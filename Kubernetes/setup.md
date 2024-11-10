@@ -81,20 +81,6 @@ sudo kubeadm token list
 openssl x509 -pubkey -in /etc/kubernetes/pki/ca.crt | openssl rsa -pubin -outform DER 2>/dev/null | openssl dgst -sha256 -hex | sed 's/^.* //'
 ```
 
-### Create pod
-```bash
-kubectl run my-nginx --image nginx
-kubectl describe pod my-nginx
-kubectl delete pod my-nginx
-```
-
-### Create pod
-```bash
-kubectl create deployment my-nginx --image nginx
-kubectl get all
-kubectl delete deployment my-nginx
-```
-
 ### Check cluster
 ```bash
 kubectl get pods -n kube-system
