@@ -10,7 +10,7 @@ dns_cloudflare_api_key = 111111111111111111111111111111
 sudo chmod -R 700 /mnt/k8s/certs
 chmod 600 /mnt/k8s/certs/cloudflare.ini
 
-Obtain certs
+### Obtain certs
 ```
 docker run --rm \
   -v /mnt/k8s/certs:/etc/letsencrypt \
@@ -25,8 +25,8 @@ docker run --rm \
   -d k.labjunkie.org
 ```
 
-https://github.com/certbot/certbot/blob/main/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
-/mnt/k8s/options/options-ssl-nginx.conf
+### https://github.com/certbot/certbot/blob/main/certbot-nginx/certbot_nginx/_internal/tls_configs/options-ssl-nginx.conf
+### /mnt/k8s/options/options-ssl-nginx.conf
 ```
 # This file contains important security parameters. If you modify this file
 # manually, Certbot will be unable to automatically provide future security
@@ -44,15 +44,15 @@ ssl_prefer_server_ciphers off;
 ssl_ciphers "ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384";
 ```
 
-/mnt/k8s/params/dhparam.pem
+### /mnt/k8s/params/dhparam.pem
 ```
 sudo openssl dhparam -out /mnt/k8s/params/dhparam.pem 2048
 ```
 sudo chmod 600 /mnt/k8s/params/dhparam.pem
 
 
-/mnt/k8s/conf
-nginx.conf
+### /mnt/k8s/conf
+### nginx.conf
 ```
 server {
     listen 443 ssl;
@@ -83,8 +83,8 @@ upstream kubernetes_api {
 }
 ```
 
-mkdir -p /mnt/k8s/logs
-docker-compose.yml
+### mkdir -p /mnt/k8s/logs
+### docker-compose.yml
 ```
 services:
   nginx:
@@ -112,13 +112,14 @@ volumes:
   confs:
 ```
 
-Trust k8s self-signed cert
+### Trust k8s self-signed cert
 ```
 scp user@control-plane-node:/etc/kubernetes/pki/ca.crt /mnt/k8s/ssl/ca.crt
 docker exec nginx-k8s-lb nginx -s reload
 curl -k https://k.labjunkie.org
 ```
 
+### Further fault finding
 ```
 docker exec nginx-k8s-lb nginx -t
 docker exec nginx-k8s-lb nginx -s reload
