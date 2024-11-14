@@ -16,3 +16,8 @@ my-apache   2/2     2            2           168m   httpd        httpd    app=my
 ```
 kubectl get deploy/my-apache -o yaml
 ```
+
+```
+kubectl describe deployment my-apache
+```
+![image](https://github.com/user-attachments/assets/389efebf-1819-4255-81b0-bff2d31f1b76)
