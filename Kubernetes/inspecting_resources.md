@@ -36,3 +36,39 @@ kubectl get node kubecontrol1 -o wide
 kubectl describe node kubecontrol1
 ```
 ![image](https://github.com/user-attachments/assets/0c3125fc-1f54-4c9b-8a04-c317b602f98e)
+
+```
+kubectl get pods -w
+kubectl get events -w
+kubectl get events --watch-only
+```
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+### Container logs
+
+```
+kubectl logs deploy/my-apache
+```
+
+```
+kubectl logs deploy/my-apache --follow
+```
+
+```
+kubectl logs pod/my-apache-6c8c89bbb9-v6dwc -c httpd
+```
+![alt text](image-3.png)
+
+```
+kubectl logs pod/my-apache-6c8c89bbb9-v6dwc --all-containers=true
+```
+
+```
+kubectl describe pod my-apache
+kubectl logs -l app=my-apache
+```
+```
+stern my-apache
+```
