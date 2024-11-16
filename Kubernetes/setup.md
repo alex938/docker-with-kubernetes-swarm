@@ -1,5 +1,11 @@
 ## Kubernetes Cluster Setup (Controller)
 
+Fully scripted:
+```
+curl -fsSL https://raw.githubusercontent.com/alex938/docker-with-kubernetes-swarm/refs/heads/main/Kubernetes/install_k8s.sh | bash
+```
+
+
 ### Disable Swap
 ```bash
 sudo swapoff -a
