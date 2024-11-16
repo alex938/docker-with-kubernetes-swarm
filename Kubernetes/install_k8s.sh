@@ -6,8 +6,6 @@
 echo "Disabling swap..."
 sudo swapoff -a
 sudo sed -i '/ swap / s/^/#/' /etc/fstab
-sudo modprobe overlay
-sudo modprobe br_netfilter
 
 # Load Kernel Modules
 echo "Loading kernel modules..."
@@ -22,11 +20,12 @@ sudo modprobe br_netfilter
 # Configure sysctl
 echo "Configuring sysctl..."
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward = 1
 EOF
 
 sudo sysctl --system
-sudo sysctl net.ipv4.ip_forward
 
 # Install Docker
 echo "Installing Docker..."
@@ -39,7 +38,6 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
     $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-sudo docker run hello-world
 
 # Configure containerd
 echo "Configuring containerd..."
@@ -47,7 +45,6 @@ sudo systemctl enable --now containerd
 sudo containerd config default | sudo tee /etc/containerd/config.toml > /dev/null
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
 sudo systemctl restart containerd
-sudo systemctl status containerd
 
 # Install Kubernetes
 echo "Installing Kubernetes components..."
@@ -59,10 +56,21 @@ sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 sudo systemctl enable --now kubelet
 
-# Install network plugin (Flannel)
+# Initialize Kubernetes Cluster
+echo "Initialising Kubernetes cluster..."
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+
+# Configure kubectl for the current user
+echo "Setting up kubectl..."
+mkdir -p $HOME/.kube
+sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Install Flannel Network Plugin
 echo "Installing Flannel network plugin..."
 kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
-sudo systemctl restart kubelet
-kubectl get pods -n kube-system
 
+# Verify Setup
 echo "Kubernetes cluster setup completed successfully!"
+kubectl get nodes
+kubectl get pods -n kube-system
