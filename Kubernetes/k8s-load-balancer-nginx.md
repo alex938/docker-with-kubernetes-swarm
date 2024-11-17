@@ -67,8 +67,10 @@ server {
 
     location / {
         proxy_pass https://kubernetes_api;
-        proxy_ssl_verify on; #upstream uses self signed certs
-        proxy_ssl_trusted_certificate /etc/nginx/ssl/ca.crt;  #upstream uses self signed certs
+        proxy_ssl_verify on;
+        proxy_ssl_trusted_certificate /etc/nginx/ssl/ca.crt;
+        proxy_ssl_name kubecontrol1;  # Matches the CN of the server certificate
+        proxy_ssl_server_name on;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -79,7 +81,7 @@ server {
 upstream kubernetes_api {
     least_conn;
     server 192.168.2.52:6443 max_fails=3 fail_timeout=5s;
-    server 192.168.2.53:6443 max_fails=3 fail_timeout=5s;
+    #server 192.168.2.53:6443 max_fails=3 fail_timeout=5s;
 }
 ```
 
@@ -99,11 +101,11 @@ services:
       - /mnt/k8s/conf:/etc/nginx/conf.d      # Mount NGINX configuration directory
       - /mnt/k8s/logs:/var/log/nginx         # Mount logs directory
     restart: always
-    healthcheck:
-      test: ["CMD", "curl", "--cacert", "/etc/nginx/ssl/ca.crt", "-f", "https://localhost"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    #healthcheck:
+    #  test: ["CMD", "curl", "--cacert", "/etc/nginx/ssl/ca.crt", "-f", "https://localhost"]
+    #  interval: 30s
+    #  timeout: 10s
+    #  retries: 3
 
 volumes:
   certs:
