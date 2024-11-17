@@ -5,7 +5,7 @@
 # Disable Swap
 echo "Disabling swap..."
 sudo swapoff -a
-sudo sed -i '/ swap / s/^/#/' /etc/fstab
+sudo sed -i '/\/swap.img/ s/^/#/' /etc/fstab
 
 # Load Kernel Modules
 echo "Loading kernel modules..."
