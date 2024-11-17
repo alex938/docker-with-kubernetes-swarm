@@ -68,7 +68,7 @@ server {
     location / {
         proxy_pass https://kubernetes_api;
         proxy_ssl_verify on; #upstream uses self signed certs
-        proxy_ssl_trusted_certificate /etc/nginx/ssl/ca.crt  #upstream uses self signed certs
+        proxy_ssl_trusted_certificate /etc/nginx/ssl/ca.crt;  #upstream uses self signed certs
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
