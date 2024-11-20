@@ -85,6 +85,11 @@ upstream kubernetes_api {
 }
 ```
 
+Grab the SAN for config above:
+```
+openssl x509 -in /etc/kubernetes/pki/apiserver.crt -text -noout | grep -A 1 "Subject Alternative Name"
+```
+
 ### mkdir -p /mnt/k8s/logs
 ### docker-compose.yml
 ```
@@ -127,4 +132,110 @@ docker exec nginx-k8s-lb nginx -t
 docker exec nginx-k8s-lb nginx -s reload
 openssl s_client -connect 192.168.2.52:6443 -CAfile /mnt/k8s/ssl/ca.crt
 docker exec nginx-k8s-lb curl --cacert /etc/nginx/ssl/ca.crt -f https://localhost
+```
+
+Check certs from load balancer:
+```
+docker exec -it nginx-k8s-lb curl --cacert /etc/nginx/ssl/ca.crt https://192.168.2.52:6443/version
+```
+
+Create service account:
+```
+kubectl create serviceaccount admin-user -n kube-system
+```
+
+Bind to cluster admin:
+```
+kubectl create clusterrolebinding admin-user-binding \
+  --clusterrole=cluster-admin \
+  --serviceaccount=kube-system:admin-user
+
+```
+
+Example admin-user-token.yml
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: admin-user-token
+  namespace: kube-system
+  annotations:
+    kubernetes.io/service-account.name: admin-user
+type: kubernetes.io/service-account-token
+
+```
+
+Apply admin-user-token to cluster
+```
+kubectl apply -f admin-user-token.yaml
+```
+
+Retrieve token
+```
+kubectl -n default get secret admin-user-token -o jsonpath='{.data.token}' | base64 --decode
+kubectl get secret admin-user-token -n kube-system -o jsonpath='{.data.token}' | base64 --decode
+```
+
+Example admin-user.kubeconfig
+```
+clusters:
+- cluster:
+    certificate-authority-data: <ca.crt base64 encoded>
+    server: https://k.labjunkie.org #or whatever your domain name is for the kube control
+  name: kubernetes
+contexts:
+contexts:
+- context:
+    cluster: kubernetes
+    user: user
+  name: user@kubernetes
+current-context: user@kubernetes
+kind: Config
+preferences: {}
+users:
+- name: admin-user
+  user:
+    token: <token>
+```
+
+Use config:
+```
+kubectl --kubeconfig=admin-user.kubeconfig get nodes
+```
+
+Further testing:
+```
+docker exec -it nginx-k8s-lb curl --cacert /etc/nginx/ssl/ca.crt \
+  -H "Authorization: Bearer <your-token>" \
+  https://192.168.2.52:6443/apis
+
+docker exec -it nginx-k8s-lb curl --cacert /etc/nginx/ssl/ca.crt \
+  -H "Authorization: Bearer <your-token>" \
+  https://192.168.2.52:6443/api/v1/nodes
+```
+
+Useage
+```
+curl --cacert /mnt/k8s/ssl/ca.crt \
+  -H "Authorization: Bearer <your-token>" \
+  https://k.labjunkie.org/
+
+curl --cacert /mnt/k8s/ssl/ca.crt \
+  -H "Authorization: Bearer <token>" \
+  https://k.labjunkie.org/apis
+
+curl --cacert /mnt/k8s/ssl/ca.crt \
+  -H "Authorization: Bearer <token>" \
+  https://k.labjunkie.org/api/v1/nodes
+
+https://k.labjunkie.org/apis/apps/v1/deployments
+https://k.labjunkie.org/api/v1/pods
+https://k.labjunkie.org/api/v1/namespaces
+https://k.labjunkie.org/api/v1/namespaces/<namespace>
+https://k.labjunkie.org/apis/apps/v1/deployments
+https://k.labjunkie.org/apis/apps/v1/namespaces/<namespace>/deployments
+https://k.labjunkie.org/api/v1/services
+https://k.labjunkie.org/api/v1/namespaces/<namespace>/services
+https://k.labjunkie.org/api/v1/events
+https://k.labjunkie.org/api/v1/namespaces/<namespace>/pods/<pod-name>/log
 ```
