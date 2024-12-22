@@ -2,7 +2,7 @@
 
 Fully scripted:
 ```
-curl -fsSL https://raw.githubusercontent.com/alex938/docker-with-kubernetes-swarm/refs/heads/main/Kubernetes/install_k8s.sh | bash
+curl -fsSL https://raw.githubusercontent.com/alex938/docker-with-kubernetes-swarm/refs/heads/main/Kubernetes/install_k8s_control.sh | bash
 ```
 
 
