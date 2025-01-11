@@ -11,5 +11,5 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    path: /volume1/share/nginx_data  
+    path: /volume1/k8s/nginx_data  
     server: nas.batcave.local
