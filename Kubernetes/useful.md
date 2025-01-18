@@ -35,3 +35,7 @@ k logs nginx-deployment-7bd8977d78-bmj9h
 ```
 kubectl logs -l app=nginx
 ```
+
+```
+kubectl config current-context
+```
