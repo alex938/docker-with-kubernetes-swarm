@@ -1,14 +1,46 @@
-# Kubernetes Exposing Ports
+# Kubernetes: Exposing Ports
 
-Cluster IP
-- Single, internal virtual IP
-- IMPORTANT: Only reachable from within the cluster
+Kubernetes services can expose applications in several ways. Here are the main types:
 
-Node Port
-- It will be given a high port number
+## 1. ClusterIP
 
-Load Balancer
-- Traffic incoming from an external source
+- Provides a single, internal virtual IP.
+- **Important:** Only reachable from within the cluster.
 
-External Name
-- Allows adding CNAME records to the CoreDNS
+```sh
+kubectl expose deployment my-app --type=ClusterIP --port=80
+```
+
+## 2. NodePort
+
+- Exposes the service on each Node's IP at a static port (the NodePort).
+- The service is accessible externally at `<NodeIP>:<NodePort>`.
+- Port number is typically in the range 30000–32767.
+
+```sh
+kubectl expose deployment my-app --type=NodePort --port=80 --name=my-app-nodeport
+```
+
+## 3. LoadBalancer
+
+- Provisions an external load balancer (if supported by the cloud provider).
+- Routes external traffic to the service.
+
+```sh
+kubectl expose deployment my-app --type=LoadBalancer --port=80 --name=my-app-lb
+```
+
+## 4. ExternalName
+
+- Maps the service to a DNS name (CNAME record) in CoreDNS.
+- No proxying of traffic; just DNS redirection.
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-external-service
+spec:
+  type: ExternalName
+  externalName: example.com
+```
