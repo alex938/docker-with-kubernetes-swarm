@@ -1,5 +1,12 @@
 # Useful commands
 
+Add kubectl completions:
+```
+source <(kubectl completion bash)
+echo "source <(kubectl completion bash)" >> ~/.bashrc
+source ~/.bashrc
+```
+
 Create join command on control node:
 ```
 kubeadm token create --print-join-command
